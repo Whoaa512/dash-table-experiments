@@ -36,6 +36,12 @@ ROWS = [
     {'a': 'CD', 'b': 6}
 ]
 
+# columns = [
+#     {
+
+#     }
+# ]
+
 
 app.layout = html.Div([
     html.H4('Gapminder DataTable'),
@@ -43,11 +49,15 @@ app.layout = html.Div([
         rows=DF_GAPMINDER.to_dict('records'),
 
         # optional - sets the order of columns
-        columns=sorted(DF_GAPMINDER.columns),
+        columns=map(sorted(DF_GAPMINDER.columns) lambda c: {
+            key: c,
+            name: c,
+            editable: true,
+        }),
 
         row_selectable=True,
         filterable=True,
-        sortable=True,
+        locked=True,
         selected_row_indices=[],
         id='datatable-gapminder'
     ),

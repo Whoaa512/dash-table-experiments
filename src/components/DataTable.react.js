@@ -15,6 +15,10 @@ const MUTABLE_PROPS = [
     'sortDirection'
 ];
 
+function isPlainObj(o) {
+  return typeof o == 'object' && o.constructor == Object;
+}
+
 class DataTable extends Component {
     constructor(props) {
         super(props);
@@ -71,25 +75,33 @@ class DataTable extends Component {
             );
         }
 
-        let columnNames;
-        if (R.has('columns', props)) {
-            columnNames = props.columns;
-        } else if (R.has('rows', newState) &&
-                   newState.rows.length > 0 &&
-                   !R.has('columns', props)) {
-            columnNames = R.keys(newState.rows[0]);
+        let _columns;
+        if (R.has('columns', props) && R.all(isPlainObj, props.columns)) {
+            _columns = props.columns
         } else {
-            columnNames = R.pluck('name', this.state.columns);
-        }
+            let columnNames;
+            if (R.has('columns', props)) {
+                columnNames = props.columns;
+            } else if (R.has('rows', newState) &&
+                       newState.rows.length > 0 &&
+                       !R.has('columns', props)) {
+                columnNames = R.keys(newState.rows[0]);
+            } else {
+                columnNames = R.pluck('name', this.state.columns);
+            }
 
-        newState.columns = columnNames.map(c => ({
-            key: c,
-            name: c,
-            editable: Boolean(props.editable),
-            sortable: Boolean(props.sortable),
-            resizable: Boolean(props.resizable),
-            filterable: Boolean(props.filterable)
-        }));
+            _columns = columnNames.map(c => ({
+                key: c,
+                name: c,
+                locked: Boolean(props.locked),
+                editable: Boolean(props.editable),
+                sortable: Boolean(props.sortable),
+                resizable: Boolean(props.resizable),
+                filterable: Boolean(props.filterable)
+            }));
+        }
+        newState.columns = _columns
+
         if (props.column_widths) {
             newState.columns.forEach((c, i) => {
                 c.width = props.column_widths[i];
@@ -384,7 +396,10 @@ DataTable.propTypes = {
      * `rows` but without order. This attribute allows you to specify
      * a custom order for your columns.
      */
-    columns: PropTypes.arrayOf(PropTypes.string),
+    columns: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.object),
+        PropTypes.arrayOf(PropTypes.string)
+    ]),
 
     row_selectable: PropTypes.bool,
     selected_row_indices: PropTypes.array,
@@ -437,7 +452,7 @@ DataTable.defaultProps = {
     filters: {},
     selected_row_indices: [],
     row_selectable: false,
-    row_height: 35,
+    row_height: 35
 }
 
 export default DataTable;
