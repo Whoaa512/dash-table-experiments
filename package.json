@@ -25,7 +25,7 @@
     "uninstall-local": "pip uninstall dash-table-experiments -y"
   },
   "dependencies": {
-    "builder": "3.2.2",
+    "builder": "5.0.0",
     "dash-components-archetype": "^0.2.7",
     "fast-isnumeric": "^1.1.1",
     "prop-types": "^15.5.9",
