@@ -16,13 +16,14 @@
     "copy-lib": "cp lib/* dash_table_experiments",
     "demo": "builder run demo",
     "install-local": "npm run copy-lib && python setup.py install",
-    "prepublish": "npm test && builder run build-dist && npm run copy-lib",
+    "prepublish": "npm run snyk-protect && npm test && builder run build-dist && npm run copy-lib",
     "build-local": "builder run build-dist && npm run copy-lib",
     "publish-all": "npm publish && python setup.py sdist upload",
     "publish-pypi": "npm run prepublish && python setup.py sdist upload",
     "start": "builder run build-dev",
     "test": "",
-    "uninstall-local": "pip uninstall dash-table-experiments -y"
+    "uninstall-local": "pip uninstall dash-table-experiments -y",
+    "snyk-protect": "snyk protect"
   },
   "dependencies": {
     "builder": "3.2.2",
@@ -34,11 +35,13 @@
     "react-data-grid": "^2.0.58",
     "react-data-grid-addons": "^2.0.58",
     "react-dom": "^15.5.4",
-    "react-virtualized": "^9.9.0"
+    "react-virtualized": "^9.9.0",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "dash-components-archetype-dev": "^0.2.7",
     "enzyme": "^2.8.2",
     "react-test-renderer": "^15.5.4"
-  }
+  },
+  "snyk": true
 }
